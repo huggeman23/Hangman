@@ -56,6 +56,9 @@ namespace Hangman
 
                 switch (guess.Length)
                 {
+                    case 0:
+                        Console.WriteLine("you must write something");
+                        break;
                     case 1:
 
                         if (word.Contains(char.Parse(guess)) == false && incorectGuess.ToString().Contains(guess) == false)
