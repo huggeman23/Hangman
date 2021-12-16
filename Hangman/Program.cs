@@ -75,9 +75,14 @@ namespace Hangman
                         p.guessWord(guess);
                         break;
                 }
-                Console.ReadLine();  
+                 
 
-                if (words[wordIndex].Contains(String.Join("", word))){ break; }
+                if (words[wordIndex].Contains(String.Join("", word)))
+                {
+                    Console.WriteLine("you won");
+                    tries = 0;
+                }
+                Console.ReadLine(); 
             
                 
                 Console.Clear();
