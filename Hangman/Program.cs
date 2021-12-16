@@ -1,37 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+
 
 namespace Hangman
 {
 
-    internal class Program
+    public class Program
     {
-        public static string[] words = { "sås" , "language" , "typo"};
+        public static string[] words={"sås","typo","language"};
 
         public static int wordIndex;
         public static StringBuilder incorectGuess = new StringBuilder();
-        public static char[] word ;
-        public static int tries =10;
+        public static char[] word;
+        private static int tries = 10;
+
+        public void WordSet(int wor) 
+        { 
+            wordIndex = wor;
+            word = words[wordIndex].ToCharArray();
+            for (int i = 0; i < words[wordIndex].Length; i++)
+            {
+                word[i] = char.Parse("_");
+            }
+        }
+        public int Try{ get { return tries; } }
+        public string[] Words{ get { return words; } }
+
 
         static void Main(string[] args)
         {
             Random r = new Random();
-            wordIndex = r.Next(words.Length);
+            Program p = new Program();
 
-            word= words[wordIndex].ToCharArray();
-            
-
-            for (int i = 0; i < words[wordIndex].Length; i++)
+            var path=Path.Combine(Directory.GetCurrentDirectory(), "text.txt");
+            using (StreamReader sw = File.OpenText(path))
             {
-                word[i]=char.Parse("_");
+                string fi = sw.ReadLine();
+                words =fi.Split(',');
             }
-
-
+           
+            p.WordSet(r.Next(words.Length));
             
-
             while (tries>0)
             {
                 Console.WriteLine($"guess a word or letter guesses left:{tries} wrong guesses:{incorectGuess.ToString()}");
@@ -46,7 +60,7 @@ namespace Hangman
 
                         if (word.Contains(char.Parse(guess)) == false && incorectGuess.ToString().Contains(guess) == false)
                         {
-                            guessLetter(guess);
+                            p.guessLetter(guess);
                         }
                         else
                         {
@@ -55,7 +69,7 @@ namespace Hangman
 
                         break;
                     default:
-                        guessWord(guess);
+                        p.guessWord(guess);
                         break;
                 }
                 Console.ReadLine();  
@@ -67,7 +81,7 @@ namespace Hangman
             }
 
         }
-        public static void guessLetter(string guess)
+        public void guessLetter(string guess)
         {
 
             if (words[wordIndex].Contains(guess))
@@ -92,11 +106,12 @@ namespace Hangman
             }
         }
 
-        public static void guessWord(string guess)
+        public void guessWord(string guess)
         {
             if (guess==words[wordIndex])
-            {
+            {                
                 Console.WriteLine("you won");
+                tries = 0;
             }
             else
             {
